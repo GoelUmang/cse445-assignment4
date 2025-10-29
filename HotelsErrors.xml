@@ -15,7 +15,7 @@
 <!-- ERROR #1: Root element should be "Hotels" but I wrote "Hotel".
      I did this on purpose to check if schema validation complains about the wrong root. -->
 <Hotel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xsi:noNamespaceSchemaLocation="https://YOUR-USERNAME.github.io/YOUR-REPO/Hotels.xsd">
+       xsi:noNamespaceSchemaLocation="https://goelumang.github.io/cse445-assignment4/Hotels.xsd">
   
   <!-- 
     ==================== HOTEL 1 (with ERROR #2) ====================
@@ -60,7 +60,7 @@
     ERROR #4: Address element has no closing tag.
     This one isn’t even schema-validatable — it’s a well-formedness error!
     The XML parser will choke before schema validation happens.
-    (I learned that the hard way once 😅)
+    (I learned that the hard way once)
   -->
   <Hotel Rating="4.0">
     <Name>Marriott Downtown Phoenix</Name>
