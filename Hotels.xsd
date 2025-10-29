@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Starting with the XML declaration — standard stuff. Using UTF-8 so we don't run into encoding surprises. -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!--
+    Root schema element using the XML Schema namespace.
+    I like keeping this line visible so people immediately know we're using XSD.
+  -->
+
+  <!-- Root element -->
+  <xs:element name="Hotels">
+    <xs:complexType>
+      <xs:sequence>
+
+        <!--
+          Each entry under Hotels is a Hotel element.
+          maxOccurs="unbounded" -> there can be any number of Hotel entries.
+          (Yep, I checked — that allows lists of hotels.)
+        -->
+        <xs:element name="Hotel" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+
+              <!-- Name of the hotel (required, single occurrence). -->
+              <xs:element name="Name" type="xs:string"/>
+
+              <!--
+                Phone numbers for the hotel. Some places have multiple lines,
+                so maxOccurs="unbounded" keeps it flexible.
+              -->
+              <xs:element name="Phone" type="xs:string" maxOccurs="unbounded"/>
+
+              <!-- Address block for the hotel -->
+              <xs:element name="Address">
+                <xs:complexType>
+                  <xs:sequence>
+
+                    <!-- Street number, e.g., "123" or "12B" — kept as string intentionally. -->
+                    <xs:element name="Number" type="xs:string"/>
+
+                    <!-- Name of the street. I personally appreciate having this separate from Number. -->
+                    <xs:element name="Street" type="xs:string"/>
+
+                    <!-- City name. Simple string — no constraints here. -->
+                    <xs:element name="City" type="xs:string"/>
+
+                    <!-- State or region. Kept generic as xs:string for portability. -->
+                    <xs:element name="State" type="xs:string"/>
+
+                    <!-- Postal code / ZIP. Using xs:string because formats vary internationally. -->
+                    <xs:element name="Zip" type="xs:string"/>
+                  </xs:sequence>
+
+                  <!--
+                    Attribute on Address: NearestAirport.
+                    Marked as required because, to me, knowing the nearest airport often matters for travel planning.
+                  -->
+                  <xs:attribute name="NearestAirport" type="xs:string" use="required"/>
+                </xs:complexType>
+              </xs:element>
+
+            </xs:sequence>
+
+            <!--
+              Optional hotel Rating attribute. I left it as string (e.g., "4.5" or "A+") so it's flexible.
+              This is optional — not all hotel entries will necessarily include it.
+            -->
+            <xs:attribute name="Rating" type="xs:string" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!--
+    That's the whole schema. I've kept it minimal and readable.
+    If you want even more conversational comments (like jokes or TODOs), tell me and I'll sprinkle them in.
+  -->
+</xs:schema>
