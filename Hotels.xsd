@@ -9,73 +9,113 @@
   -->
 
   <!-- Root element -->
+  <!-- Hotels with an 's' — had to remind myself it's plural, not singular -->
   <xs:element name="Hotels">
     <xs:complexType>
+      <!-- Using complexType because Hotels contains other elements, not just text -->
       <xs:sequence>
+        <!-- Sequence means the order matters here. Order: Hotel elements in any quantity -->
 
         <!--
           Each entry under Hotels is a Hotel element.
           maxOccurs="unbounded" -> there can be any number of Hotel entries.
           (Yep, I checked — that allows lists of hotels.)
+          
+          Note: minOccurs defaults to 1, so at least one hotel is required.
+          Makes sense - empty hotel list would be pointless.
         -->
         <xs:element name="Hotel" maxOccurs="unbounded">
           <xs:complexType>
+            <!-- Another complexType because each Hotel has multiple child elements -->
             <xs:sequence>
+              <!-- Important: elements must appear in this exact order in the XML -->
 
               <!-- Name of the hotel (required, single occurrence). -->
+              <!-- Considered adding minLength/maxLength restrictions but decided against it -->
+              <!-- Some hotel names are short like "Westin" and some are super long -->
               <xs:element name="Name" type="xs:string"/>
 
               <!--
                 Phone numbers for the hotel. Some places have multiple lines,
                 so maxOccurs="unbounded" keeps it flexible.
+                
+                I thought about using a regex pattern to validate phone format
+                but then realized phone numbers vary so much (local, international, extensions)
+                that it would just cause headaches. String is safer.
               -->
+              <!-- minOccurs not specified = defaults to 1, so every hotel needs at least one phone -->
               <xs:element name="Phone" type="xs:string" maxOccurs="unbounded"/>
 
               <!-- Address block for the hotel -->
+              <!-- This is where it gets nested - Address has its own structure inside -->
               <xs:element name="Address">
                 <xs:complexType>
+                  <!-- Address needs sequence too since it has multiple ordered elements -->
                   <xs:sequence>
 
                     <!-- Street number, e.g., "123" or "12B" — kept as string intentionally. -->
+                    <!-- Using string instead of int because addresses can be "12A" or "Suite 500" -->
+                    <!-- Learned this the hard way when testing with real hotel data -->
                     <xs:element name="Number" type="xs:string"/>
 
                     <!-- Name of the street. I personally appreciate having this separate from Number. -->
+                    <!-- Makes parsing easier later if you need to do address formatting -->
                     <xs:element name="Street" type="xs:string"/>
 
                     <!-- City name. Simple string — no constraints here. -->
+                    <!-- Could add enumeration for valid cities but that's overkill for this assignment -->
                     <xs:element name="City" type="xs:string"/>
 
                     <!-- State or region. Kept generic as xs:string for portability. -->
+                    <!-- In real app might want to restrict to 2-letter codes like AZ, CA, NY -->
+                    <!-- but assignment doesn't require it so keeping it simple -->
                     <xs:element name="State" type="xs:string"/>
 
                     <!-- Postal code / ZIP. Using xs:string because formats vary internationally. -->
+                    <!-- US has 5-digit or 9-digit (12345-6789), other countries are totally different -->
+                    <!-- String handles all cases without validation headaches -->
                     <xs:element name="Zip" type="xs:string"/>
                   </xs:sequence>
 
                   <!--
                     Attribute on Address: NearestAirport.
                     Marked as required because, to me, knowing the nearest airport often matters for travel planning.
+                    
+                    This goes on the Address element itself, not as a child element.
+                    Syntax: <Address NearestAirport="Sky Harbor">
+                    
+                    use="required" means every single Address MUST have this attribute.
+                    If it's missing, validation will fail.
                   -->
                   <xs:attribute name="NearestAirport" type="xs:string" use="required"/>
                 </xs:complexType>
               </xs:element>
+              <!-- End of Address element definition -->
 
             </xs:sequence>
+            <!-- End of Hotel's sequence of child elements -->
 
             <!--
               Optional hotel Rating attribute. I left it as string (e.g., "4.5" or "A+") so it's flexible.
               This is optional — not all hotel entries will necessarily include it.
+              
+              use="optional" is the key here - some hotels will have Rating, some won't.
+              Both are valid according to this schema.
+              
+              Syntax example: <Hotel Rating="4.2">
+              The Rating goes directly on the Hotel element, not inside it.
             -->
+            <!-- Could have used xs:decimal but string gives more flexibility -->
+            <!-- What if someone wants to rate "4.5/5" or "4 stars"? String handles it all -->
             <xs:attribute name="Rating" type="xs:string" use="optional"/>
           </xs:complexType>
         </xs:element>
+        <!-- Done with Hotel element definition -->
 
       </xs:sequence>
+      <!-- Closing sequence for Hotels root element -->
     </xs:complexType>
   </xs:element>
+  <!-- That's it for the root Hotels element -->
 
-  <!--
-    That's the whole schema. I've kept it minimal and readable.
-    If you want even more conversational comments (like jokes or TODOs), tell me and I'll sprinkle them in.
-  -->
 </xs:schema>
